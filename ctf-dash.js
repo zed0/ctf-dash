@@ -64,10 +64,11 @@ const transforms = [
 	},
 	{
 		name: 'To braile',
-		validity: input => input !== '' && _.every(input, c => braille[c.toUpperCase()] !== undefined),
+		displayClasses: 'braille',
+		validity: input => input !== '' && _.some(input, c => braille[c.toUpperCase()] !== undefined),
 		transform: input => {
 			return _(input)
-				.map(c => braille[c.toUpperCase()])
+				.map(c => braille[c.toUpperCase()] !== undefined ? braille[c.toUpperCase()] : c)
 				.join('');
 		},
 	},
@@ -87,7 +88,12 @@ function runTransforms(input, depth=0) {
 		const nextInput = transform.transform(input);
 
 		const childResults = runTransforms(nextInput, depth + 1);
-		results.push({operation: transform.name, result: nextInput, children: childResults});
+		results.push({
+			operation: transform.name,
+			result: nextInput,
+			children: childResults,
+			displayClasses: transform.displayClasses,
+		});
 	}
 
 	return results;
@@ -95,10 +101,10 @@ function runTransforms(input, depth=0) {
 
 const generateHtml = _.template(`
 	<form>
-		<div class="form-group row">
+		<div class="form-group row <%- extraClasses %>">
 			<label class="col-sm-2 col-form-label" for="input-<%- id %>"><%- chain %></label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="input-<%- id%>" readonly value="<%= result %>">
+				<textarea class="form-control result-output" id="input-<%- id%>" readonly rows="1"><%= result %></textarea>
 			</div>
 		</div>
 		<div class="children" style="margin-left: 20px;">
@@ -114,6 +120,7 @@ function displayResults(parentElement, results) {
 			id: id++,
 			chain: result.operation,
 			result: result.result,
+			extraClasses: result.displayClasses,
 		});
 		const resultElement = $(resultHtml).appendTo(parentElement);
 

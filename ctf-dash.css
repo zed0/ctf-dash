@@ -1,0 +1,21 @@
+.children {
+	margin-left: 20px;
+}
+
+.result-output {
+	font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
+
+textarea.result-output {
+	height: 38px;
+}
+
+.braille textarea.result-output {
+	line-height: 0.8;
+	letter-spacing: -3px;
+}
+
+#input-text {
+	font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+	height: 38px;
+}
