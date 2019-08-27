@@ -1,0 +1,273 @@
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<title>CTF Dashboard</title>
+</head>
+
+<body>
+	<div class="container">
+		<h2>Team UWCS iHunt Dashboard</h2>
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<label for="input-text">Input text</label>
+					<input type="text" class="form-control" id="input-text" placeholder="0xDEADBEEF">
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<label for="bin-ascii">Binary -> ASCII</label>
+					<input type="text" class="form-control" id="bin-ascii" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="oct-ascii">Octal -> ASCII</label>
+					<input type="text" class="form-control" id="oct-ascii" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="dec-ascii">Decimal -> ASCII</label>
+					<input type="text" class="form-control" id="dec-ascii" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="hex-ascii">Hexadecimal -> ASCII</label>
+					<input type="text" class="form-control" id="hex-ascii" readonly>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<label for="ascii-bin">ASCII -> Binary</label>
+					<input type="text" class="form-control" id="ascii-bin" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="ascii-oct">ASCII -> Octal</label>
+					<input type="text" class="form-control" id="ascii-oct" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="ascii-dec">ASCII -> Decimal</label>
+					<input type="text" class="form-control" id="ascii-dec" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="ascii-hex">ASCII -> Hexadecimal</label>
+					<input type="text" class="form-control" id="ascii-hex" readonly>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<label for="bin-bin">Binary -> Binary</label>
+					<input type="text" class="form-control" id="bin-bin" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="bin-oct">Binary -> Octal</label>
+					<input type="text" class="form-control" id="bin-oct" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="bin-dec">Binary -> Decimal</label>
+					<input type="text" class="form-control" id="bin-dec" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="bin-hex">Binary -> Hexadecimal</label>
+					<input type="text" class="form-control" id="bin-hex" readonly>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<label for="oct-bin">Octal -> Binary</label>
+					<input type="text" class="form-control" id="oct-bin" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="oct-oct">Octal -> Octal</label>
+					<input type="text" class="form-control" id="oct-oct" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="oct-dec">Octal -> Decimal</label>
+					<input type="text" class="form-control" id="oct-dec" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="oct-hex">Octal -> Hexadecimal</label>
+					<input type="text" class="form-control" id="oct-hex" readonly>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<label for="dec-bin">Decimal -> Binary</label>
+					<input type="text" class="form-control" id="dec-bin" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="dec-oct">Decimal -> Octal</label>
+					<input type="text" class="form-control" id="dec-oct" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="dec-dec">Decimal -> Decimal</label>
+					<input type="text" class="form-control" id="dec-dec" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="dec-hex">Decimal -> Hexadecimal</label>
+					<input type="text" class="form-control" id="dec-hex" readonly>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<label for="hex-bin">Hexadecimal -> Binary</label>
+					<input type="text" class="form-control" id="hex-bin" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="hex-oct">Hexadecimal -> Octal</label>
+					<input type="text" class="form-control" id="hex-oct" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="hex-dec">Hexadecimal -> Decimal</label>
+					<input type="text" class="form-control" id="hex-dec" readonly>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="hex-hex">Hexadecimal -> Hexadecimal</label>
+					<input type="text" class="form-control" id="hex-hex" readonly>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<label for="dec-letter">Decimal (mod 26) -> Letter</label>
+					<input type="text" class="form-control" id="dec-letter" readonly>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$('#input-text').on('keyup', function(){
+			// split the input up into items
+			const inp =  $("#input-text").val().split(/( +|,+)/).filter(function (el) {
+				return (el !== " " && el !== ",");
+			});
+
+			// convert items to different bases and then to ASCII (actually UTF-16)
+			const bin = inp.map(function(x) { return parseInt(x, 2); });
+			const oct = inp.map(function(x) { return parseInt(x, 8); });
+			const dec = inp.map(function(x) { return parseInt(x, 10); });
+			const hex = inp.map(function(x) { return parseInt(x, 16); });
+			$('#bin-ascii').val(String.fromCharCode.apply(String, bin).split(""));
+			$('#oct-ascii').val(String.fromCharCode.apply(String, oct).split(""));
+			$('#dec-ascii').val(String.fromCharCode.apply(String, dec).split(""));
+			$('#hex-ascii').val(String.fromCharCode.apply(String, hex).split(""));
+
+			// convert items from ASCII (actually UTF-16) to different bases
+			const bin2 = inp.map(function (x) { return x.charCodeAt(0).toString(2) });
+			const oct2 = inp.map(function (x) { return x.charCodeAt(0).toString(8) });
+			const dec2 = inp.map(function (x) { return x.charCodeAt(0) });
+			const hex2 = inp.map(function (x) { return x.charCodeAt(0).toString(16) });
+			$('#ascii-bin').val(bin2);
+			$('#ascii-oct').val(oct2);
+			$('#ascii-dec').val(dec2);
+			$('#ascii-hex').val(hex2);
+
+			// conversions between number bases - binary
+			const bin3 = inp.map(function (x) { return parseInt(x,2).toString(2) });
+			const oct3 = inp.map(function (x) { return parseInt(x,2).toString(8) });
+			const dec3 = inp.map(function (x) { return parseInt(x,2) });
+			const hex3 = inp.map(function (x) { return parseInt(x,2).toString(16) });
+
+			$('#bin-bin').val(bin3);
+			$('#bin-oct').val(oct3);
+			$('#bin-dec').val(dec3);
+			$('#bin-hex').val(hex3);
+
+			// conversions between number bases - octal
+			const bin4 = inp.map(function (x) { return parseInt(x,8).toString(2) });
+			const oct4 = inp.map(function (x) { return parseInt(x,8).toString(8) });
+			const dec4 = inp.map(function (x) { return parseInt(x,8) });
+			const hex4 = inp.map(function (x) { return parseInt(x,8).toString(16) });
+
+			$('#oct-bin').val(bin4);
+			$('#oct-oct').val(oct4);
+			$('#oct-dec').val(dec4);
+			$('#oct-hex').val(hex4);
+
+			// conversions between number bases - decimal
+			const bin5 = inp.map(function (x) { return parseInt(x,10).toString(2) });
+			const oct5 = inp.map(function (x) { return parseInt(x,10).toString(8) });
+			const dec5 = inp.map(function (x) { return parseInt(x,10) });
+			const hex5 = inp.map(function (x) { return parseInt(x,10).toString(16) });
+
+			$('#dec-bin').val(bin5);
+			$('#dec-oct').val(oct5);
+			$('#dec-dec').val(dec5);
+			$('#dec-hex').val(hex5);
+
+			// conversions between number bases - hexadecimal
+			const bin6 = inp.map(function (x) { return parseInt(x,16).toString(2) });
+			const oct6 = inp.map(function (x) { return parseInt(x,16).toString(8) });
+			const dec6 = inp.map(function (x) { return parseInt(x,16) });
+			const hex6 = inp.map(function (x) { return parseInt(x,16).toString(16) });
+
+			$('#hex-bin').val(bin6);
+			$('#hex-oct').val(oct6);
+			$('#hex-dec').val(dec6);
+			$('#hex-hex').val(hex6);
+
+			// convert numbers to the corresponding letters (mod 26)
+			const letter = dec.map(function(x) { return String.fromCharCode((((x-1)%26)+1)+64)});
+			$('#dec-letter').val(letter);
+
+		});
+	</script>
+
+</body>
+
+
