@@ -5,77 +5,81 @@ $(document).ready(function(){
 	});
 });
 
-function updateInputs(text){
-	// split the input up into items
-	const inp = text.split(/( +|,+)/).filter(function (el) {
-		return (el !== " " && el !== ",");
-	});
+function fromBaseTransform(base, baseName) {
+	const digits = _.take(['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'], base);
 
-	// convert items to different bases and then to ASCII (actually UTF-16)
-	const bin = inp.map(function(x) { return parseInt(x, 2); });
-	const oct = inp.map(function(x) { return parseInt(x, 8); });
-	const dec = inp.map(function(x) { return parseInt(x, 10); });
-	const hex = inp.map(function(x) { return parseInt(x, 16); });
-	$('#bin-ascii').val(String.fromCharCode.apply(String, bin).split(""));
-	$('#oct-ascii').val(String.fromCharCode.apply(String, oct).split(""));
-	$('#dec-ascii').val(String.fromCharCode.apply(String, dec).split(""));
-	$('#hex-ascii').val(String.fromCharCode.apply(String, hex).split(""));
+	return {
+		name: `From ${baseName}`,
+		validity: input => {
+			return input !== '' && _.every(_.toUpper(input), c => _.includes(digits, c))
+		},
+		transform: input => parseInt(input, base).toString(),
+	};
+}
 
-	// convert items from ASCII (actually UTF-16) to different bases
-	const bin2 = inp.map(function (x) { return x.charCodeAt(0).toString(2) });
-	const oct2 = inp.map(function (x) { return x.charCodeAt(0).toString(8) });
-	const dec2 = inp.map(function (x) { return x.charCodeAt(0) });
-	const hex2 = inp.map(function (x) { return x.charCodeAt(0).toString(16) });
-	$('#ascii-bin').val(bin2);
-	$('#ascii-oct').val(oct2);
-	$('#ascii-dec').val(dec2);
-	$('#ascii-hex').val(hex2);
+const transforms = [
+	fromBaseTransform(2,  'binary'),
+	fromBaseTransform(8,  'octal'),
+	fromBaseTransform(10, 'decimal'),
+	fromBaseTransform(16, 'hex'),
+];
 
-	// conversions between number bases - binary
-	const bin3 = inp.map(function (x) { return parseInt(x,2).toString(2) });
-	const oct3 = inp.map(function (x) { return parseInt(x,2).toString(8) });
-	const dec3 = inp.map(function (x) { return parseInt(x,2) });
-	const hex3 = inp.map(function (x) { return parseInt(x,2).toString(16) });
+const maxDepth = 3;
+function runTransforms(input, depth=0) {
+	const results = [];
 
-	$('#bin-bin').val(bin3);
-	$('#bin-oct').val(oct3);
-	$('#bin-dec').val(dec3);
-	$('#bin-hex').val(hex3);
+	if(depth >= maxDepth)
+		return results;
 
-	// conversions between number bases - octal
-	const bin4 = inp.map(function (x) { return parseInt(x,8).toString(2) });
-	const oct4 = inp.map(function (x) { return parseInt(x,8).toString(8) });
-	const dec4 = inp.map(function (x) { return parseInt(x,8) });
-	const hex4 = inp.map(function (x) { return parseInt(x,8).toString(16) });
+	for(const transform of transforms) {
+		if(!transform.validity(input))
+			continue;
 
-	$('#oct-bin').val(bin4);
-	$('#oct-oct').val(oct4);
-	$('#oct-dec').val(dec4);
-	$('#oct-hex').val(hex4);
+		const nextInput = transform.transform(input);
 
-	// conversions between number bases - decimal
-	const bin5 = inp.map(function (x) { return parseInt(x,10).toString(2) });
-	const oct5 = inp.map(function (x) { return parseInt(x,10).toString(8) });
-	const dec5 = inp.map(function (x) { return parseInt(x,10) });
-	const hex5 = inp.map(function (x) { return parseInt(x,10).toString(16) });
+		const childResults = runTransforms(nextInput, depth + 1);
+		results.push({operation: transform.name, result: nextInput, children: childResults});
+	}
 
-	$('#dec-bin').val(bin5);
-	$('#dec-oct').val(oct5);
-	$('#dec-dec').val(dec5);
-	$('#dec-hex').val(hex5);
+	return results;
+}
 
-	// conversions between number bases - hexadecimal
-	const bin6 = inp.map(function (x) { return parseInt(x,16).toString(2) });
-	const oct6 = inp.map(function (x) { return parseInt(x,16).toString(8) });
-	const dec6 = inp.map(function (x) { return parseInt(x,16) });
-	const hex6 = inp.map(function (x) { return parseInt(x,16).toString(16) });
+const generateHtml = _.template(`
+	<form>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="input-<%- id %>"><%- chain %></label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="input-<%- id%>" readonly value="<%= result %>">
+			</div>
+		</div>
+		<div class="children" style="margin-left: 20px;">
+		</div>
+	</form>
+`);
 
-	$('#hex-bin').val(bin6);
-	$('#hex-oct').val(oct6);
-	$('#hex-dec').val(dec6);
-	$('#hex-hex').val(hex6);
+function displayResults(parentElement, results) {
+	let id = 0;
 
-	// convert numbers to the corresponding letters (mod 26)
-	const letter = dec.map(function(x) { return String.fromCharCode((((x-1)%26)+1)+64)});
-	$('#dec-letter').val(letter);
+	for(let result of results) {
+		const resultHtml = generateHtml({
+			id: id++,
+			chain: result.operation,
+			result: result.result,
+		});
+		const resultElement = $(resultHtml).appendTo(parentElement);
+
+		const childResultsArea = resultElement.find('.children');
+		displayResults(childResultsArea, result.children);
+	}
+}
+
+function updateInputs(text) {
+	const input = text;
+
+	const results = runTransforms(input);
+
+	const resultsArea = $('#result-area');
+	resultsArea.empty();
+
+	displayResults(resultsArea, results);
 }
