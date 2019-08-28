@@ -102,22 +102,33 @@ function runTransforms(input, depth=0) {
 const generateHtml = _.template(`
 	<form>
 		<div class="form-group row <%- extraClasses %>">
-			<label class="col-sm-2 col-form-label" for="input-<%- id %>"><%- chain %></label>
+			<label
+				class="col-sm-2 col-form-label"
+				for="<%- id %>-input"
+			>
+				<a href="#<%- id %>-children" data-toggle="collapse"></a>
+				<%- chain %>
+			</label>
 			<div class="col-sm-10">
-				<textarea class="form-control result-output" id="input-<%- id%>" readonly rows="1"><%= result %></textarea>
+				<textarea class="form-control result-output" id="<%- id %>-input" readonly rows="1"><%= result %></textarea>
 			</div>
 		</div>
-		<div class="children" style="margin-left: 20px;">
+		<div
+			id="<%- id %>-children"
+			class="children collapse show"
+			style="margin-left: 20px;"
+		>
 		</div>
 	</form>
 `);
 
-function displayResults(parentElement, results) {
-	let id = 0;
+function displayResults(parentElement, parentId, results) {
+	let idNum = 0;
 
 	for(let result of results) {
+		const id = `${parentId}-${idNum++}`;
 		const resultHtml = generateHtml({
-			id: id++,
+			id,
 			chain: result.operation,
 			result: result.result,
 			extraClasses: result.displayClasses,
@@ -125,7 +136,7 @@ function displayResults(parentElement, results) {
 		const resultElement = $(resultHtml).appendTo(parentElement);
 
 		const childResultsArea = resultElement.find('.children');
-		displayResults(childResultsArea, result.children);
+		displayResults(childResultsArea, id, result.children);
 	}
 }
 
@@ -137,5 +148,5 @@ function updateInputs(text) {
 	const resultsArea = $('#result-area');
 	resultsArea.empty();
 
-	displayResults(resultsArea, results);
+	displayResults(resultsArea, 'root', results);
 }

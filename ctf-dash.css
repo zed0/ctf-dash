@@ -19,3 +19,18 @@ textarea.result-output {
 	font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
 	height: 38px;
 }
+
+[data-toggle="collapse"]:after {
+	display: inline-block;
+	display: inline-block;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	content: "▼";
+	transition: all linear 0.25s;
+}
+[data-toggle="collapse"].collapsed:after {
+	transform: rotate(-90deg) ;
+}
