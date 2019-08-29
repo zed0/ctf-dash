@@ -1,7 +1,12 @@
+// Tracking changes via this rather than on change because change only fires when the input is blurred
+let previousInput = null;
 $(document).ready(function(){
 	$('#input-text').on('keyup', function() {
 		const text = $("#input-text").val();
-		updateInputs(text);
+		if(previousInput !== text) {
+			previousInput = text;
+			updateInputs(text);
+		}
 	});
 });
 
