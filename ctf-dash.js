@@ -10,14 +10,23 @@ $(document).ready(function(){
 	});
 });
 
+const braille = {
+	' ': '⠀', '_': '⠸', '-': '⠤', ',': '⠠', ';': '⠰', ':': '⠱', '!': '⠮', '?': '⠹', '.': '⠨', '(': '⠷', '[': '⠪', '@': '⠈', '*': '⠡', '/': '⠌', '\'': '⠄', '\"': '⠐', '\\': '⠳', '&': '⠯', '%': '⠩', '^': '⠘', '+': '⠬', '<': '⠣', '>': '⠜', '$': '⠫',
+	'0': '⠴', '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲', '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔',
+	'A': '⠁', 'B': '⠃', 'C': '⠉', 'D': '⠙', 'E': '⠑', 'F': '⠋', 'G': '⠛', 'H': '⠓', 'I': '⠊', 'J': '⠚', 'K': '⠅', 'L': '⠇', 'M': '⠍', 'N': '⠝', 'O': '⠕', 'P': '⠏', 'Q': '⠟', 'R': '⠗', 'S': '⠎', 'T': '⠞', 'U': '⠥', 'V': '⠧', 'W': '⠺', 'X': '⠭', 'Z': '⠵',
+	']': '⠻', '#': '⠼', 'Y': '⠽', ')': '⠾', '=': '⠿'
+};
+
+const hexDigits = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
+
 function fromBaseTransform(base, baseName) {
-	const digits = _.take(['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'], base);
+	const digitsForBase = _.take(hexDigits, base);
 
 	return {
 		name: `From ${baseName}`,
 		validity: input => _(input)
 			.split(' ')
-			.every(s => s !== '' && _.every(_.toUpper(s), c => _.includes(digits, c)) && parseInt(s, base) <= Number.MAX_SAFE_INTEGER),
+			.every(s => s !== '' && _.every(_.toUpper(s), c => _.includes(digitsForBase, c)) && parseInt(s, base) <= Number.MAX_SAFE_INTEGER),
 		transform: input => _(input)
 			.split(' ')
 			.map(s => parseInt(s, base).toString())
@@ -26,12 +35,12 @@ function fromBaseTransform(base, baseName) {
 }
 
 function toBaseTransform(base, baseName) {
-	const digits = ['0','1','2','3','4','5','6','7','8','9'];
+	const digitsForDecimal = _.take(hexDigits, 10);
 	return {
 		name: `To ${baseName}`,
 		validity: input => _(input)
 			.split(' ')
-			.every(s => s !== '' && _.every(s, c => _.includes(digits, c)) && parseInt(s, 10) <= Number.MAX_SAFE_INTEGER),
+			.every(s => s !== '' && _.every(s, c => _.includes(digitsForDecimal, c)) && parseInt(s, 10) <= Number.MAX_SAFE_INTEGER),
 		transform: input => _(input)
 			.split(' ')
 			.map(s => parseInt(s, 10).toString(base))
@@ -53,36 +62,27 @@ function groupAsN(n) {
 }
 
 function padToMultiple(n) {
-	const digits = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
 	return {
 		// Currently only padding numbers, not sure what to pad other strings with
 		name: `Pad front mod ${n}`,
-		validity: input => input !== '' && input.length % n !== 0 && _.every(_.toUpper(input), c => _.includes(digits, c)),
+		validity: input => input !== '' && input.length % n !== 0 && _.every(_.toUpper(input), c => _.includes(hexDigits, c)),
 		transform: input => '0'.repeat(n - (input.length % n)) + input,
 	};
 }
 
 function padGroups(n) {
-	const digits = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
 	return {
 		// Currently only padding numbers, not sure what to pad other strings with
 		name: `Pad groups mod ${n}`,
 		validity: input => input !== '' && _.includes(input, ' ') && _(input)
 			.split(' ')
-			.every(s => s.length <= n && _.every(_.toUpper(s), c => _.includes(digits, c))),
+			.every(s => s.length <= n && _.every(_.toUpper(s), c => _.includes(hexDigits, c))),
 		transform: input => _(input)
 			.split(' ')
 			.map(s => _.padStart(s, n, '0'))
 			.join(' '),
 	};
 }
-
-const braille = {
-	' ': '⠀', '_': '⠸', '-': '⠤', ',': '⠠', ';': '⠰', ':': '⠱', '!': '⠮', '?': '⠹', '.': '⠨', '(': '⠷', '[': '⠪', '@': '⠈', '*': '⠡', '/': '⠌', '\'': '⠄', '\"': '⠐', '\\': '⠳', '&': '⠯', '%': '⠩', '^': '⠘', '+': '⠬', '<': '⠣', '>': '⠜', '$': '⠫',
-	'0': '⠴', '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲', '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔',
-	'A': '⠁', 'B': '⠃', 'C': '⠉', 'D': '⠙', 'E': '⠑', 'F': '⠋', 'G': '⠛', 'H': '⠓', 'I': '⠊', 'J': '⠚', 'K': '⠅', 'L': '⠇', 'M': '⠍', 'N': '⠝', 'O': '⠕', 'P': '⠏', 'Q': '⠟', 'R': '⠗', 'S': '⠎', 'T': '⠞', 'U': '⠥', 'V': '⠧', 'W': '⠺', 'X': '⠭', 'Z': '⠵',
-	']': '⠻', '#': '⠼', 'Y': '⠽', ')': '⠾', '=': '⠿'
-};
 
 const transforms = [
 	fromBaseTransform(2,  'binary'),
