@@ -39,6 +39,44 @@ function toBaseTransform(base, baseName) {
 	};
 }
 
+function groupAsN(n) {
+	return {
+		name: `Group as ${n}`,
+		validity: input => input !== '' && input.length % n === 0 && !_.includes(input, ' '),
+		transform: input => {
+			return _(input)
+				.chunk(n)
+				.map(s => s.join(''))
+				.join(' ');
+		},
+	};
+}
+
+function padToMultiple(n) {
+	const digits = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
+	return {
+		// Currently only padding numbers, not sure what to pad other strings with
+		name: `Pad front mod ${n}`,
+		validity: input => input !== '' && input.length % n !== 0 && _.every(_.toUpper(input), c => _.includes(digits, c)),
+		transform: input => '0'.repeat(n - (input.length % n)) + input,
+	};
+}
+
+function padGroups(n) {
+	const digits = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
+	return {
+		// Currently only padding numbers, not sure what to pad other strings with
+		name: `Pad groups mod ${n}`,
+		validity: input => input !== '' && _.includes(input, ' ') && _(input)
+			.split(' ')
+			.every(s => s.length <= n && _.every(_.toUpper(s), c => _.includes(digits, c))),
+		transform: input => _(input)
+			.split(' ')
+			.map(s => _.padStart(s, n, '0'))
+			.join(' '),
+	};
+}
+
 const braille = {
 	' ': '⠀', '_': '⠸', '-': '⠤', ',': '⠠', ';': '⠰', ':': '⠱', '!': '⠮', '?': '⠹', '.': '⠨', '(': '⠷', '[': '⠪', '@': '⠈', '*': '⠡', '/': '⠌', '\'': '⠄', '\"': '⠐', '\\': '⠳', '&': '⠯', '%': '⠩', '^': '⠘', '+': '⠬', '<': '⠣', '>': '⠜', '$': '⠫',
 	'0': '⠴', '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲', '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔',
@@ -53,6 +91,9 @@ const transforms = [
 	toBaseTransform(2,  'binary'),
 	toBaseTransform(8,  'octal'),
 	toBaseTransform(16, 'hex'),
+	padToMultiple(8),
+	padGroups(8),
+	groupAsN(8),
 	{
 		name: 'ASCII values',
 		validity: input => input !== '',
