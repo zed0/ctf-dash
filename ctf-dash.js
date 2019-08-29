@@ -140,8 +140,8 @@ const transforms = [
 	},
 ];
 
-const maxDepth = 3;
-function runTransforms(input, depth=0) {
+const maxDepth = 4;
+function runTransforms(input, parentResults, depth=0) {
 	const results = [];
 
 	if(depth >= maxDepth)
@@ -152,8 +152,10 @@ function runTransforms(input, depth=0) {
 			continue;
 
 		const nextInput = transform.transform(input);
+		if(_.includes(parentResults, nextInput))
+			continue;
 
-		const childResults = runTransforms(nextInput, depth + 1);
+		const childResults = runTransforms(nextInput, [...parentResults, nextInput], depth + 1);
 		results.push({
 			operation: transform.name,
 			result: nextInput,
@@ -209,7 +211,7 @@ function displayResults(parentElement, parentId, results) {
 function updateInputs(text) {
 	const input = text;
 
-	const results = runTransforms(input);
+	const results = runTransforms(input, [input]);
 
 	const resultsArea = $('#result-area');
 	resultsArea.empty();
