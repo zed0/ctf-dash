@@ -15,8 +15,13 @@ function fromBaseTransform(base, baseName) {
 
 	return {
 		name: `From ${baseName}`,
-		validity: input => input !== '' && _.every(_.toUpper(input), c => _.includes(digits, c)),
-		transform: input => parseInt(input, base).toString(),
+		validity: input => _(input)
+			.split(' ')
+			.every(s => s !== '' && _.every(_.toUpper(s), c => _.includes(digits, c)) && parseInt(s, base) <= Number.MAX_SAFE_INTEGER),
+		transform: input => _(input)
+			.split(' ')
+			.map(s => parseInt(s, base).toString())
+			.join(' '),
 	};
 }
 
@@ -24,9 +29,14 @@ function toBaseTransform(base, baseName) {
 	const digits = ['0','1','2','3','4','5','6','7','8','9'];
 	return {
 		name: `To ${baseName}`,
-		validity: input => input !== '' && _.every(input, c => _.includes(digits, c)),
-		transform: input => parseInt(input, 10).toString(base),
-	}
+		validity: input => _(input)
+			.split(' ')
+			.every(s => s !== '' && _.every(s, c => _.includes(digits, c)) && parseInt(s, 10) <= Number.MAX_SAFE_INTEGER),
+		transform: input => _(input)
+			.split(' ')
+			.map(s => parseInt(s, 10).toString(base))
+			.join(' '),
+	};
 }
 
 const braille = {
