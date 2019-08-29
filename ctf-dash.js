@@ -49,6 +49,16 @@ const transforms = [
 		transform: input => _.map(input, c => c.charCodeAt(0).toString()).join(' '),
 	},
 	{
+		name: 'As ASCII',
+		validity: input => _(input)
+			.split(' ')
+			.every(c => parseInt(c, 10) < 256),
+		transform: input => _(input)
+			.split(' ')
+			.map(c => String.fromCharCode(parseInt(c, 10)))
+			.join(''),
+	},
+	{
 		name: 'Strip spaces',
 		// NOTE: We specifically include a blank braille, which doesn't technically count as whitespace
 		// https://en.wikipedia.org/wiki/Trimming_(computer_programming)#Non-space_blanks
