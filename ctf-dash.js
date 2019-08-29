@@ -19,6 +19,59 @@ const braille = {
 
 const hexDigits = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
 
+const usStates = {
+	AL: 'Alabama',
+	AK: 'Alaska',
+	AZ: 'Arizona',
+	AR: 'Arkansas',
+	CA: 'California',
+	CO: 'Colorado',
+	CT: 'Connecticut',
+	DE: 'Delaware',
+	FL: 'Florida',
+	GA: 'Georgia',
+	HI: 'Hawaii',
+	ID: 'Idaho',
+	IL: 'Illinois',
+	IN: 'Indiana',
+	IA: 'Iowa',
+	KS: 'Kansas',
+	KY: 'Kentucky',
+	LA: 'Louisiana',
+	ME: 'Maine',
+	MD: 'Maryland',
+	MA: 'Massachusetts',
+	MI: 'Michigan',
+	MN: 'Minnesota',
+	MS: 'Mississippi',
+	MO: 'Missouri',
+	MT: 'Montana',
+	NE: 'Nebraska',
+	NV: 'Nevada',
+	NH: 'New Hampshire',
+	NJ: 'New Jersey',
+	NM: 'New Mexico',
+	NY: 'New York',
+	NC: 'North Carolina',
+	ND: 'North Dakota',
+	OH: 'Ohio',
+	OK: 'Oklahoma',
+	OR: 'Oregon',
+	PA: 'Pennsylvania',
+	RI: 'Rhode Island',
+	SC: 'South Carolina',
+	SD: 'South Dakota',
+	TN: 'Tennessee',
+	TX: 'Texas',
+	UT: 'Utah',
+	VT: 'Vermont',
+	VA: 'Virginia',
+	WA: 'Washington',
+	WV: 'West Virginia',
+	WI: 'Wisconsin',
+	WY: 'Wyoming',
+};
+
 function fromBaseTransform(base, baseName) {
 	const digitsForBase = _.take(hexDigits, base);
 
@@ -53,7 +106,8 @@ function groupAsN(n) {
 		name: `Group as ${n}`,
 		validity: input => input !== '' && input.length % n === 0 && !_.includes(input, ' '),
 		transform: input => {
-			return _(input)
+			const withoutSpaces = _.replace(input, /[\s⠀]/g,'');
+			return _(withoutSpaces)
 				.chunk(n)
 				.map(s => s.join(''))
 				.join(' ');
@@ -94,6 +148,7 @@ const transforms = [
 	padToMultiple(8),
 	padGroups(8),
 	groupAsN(8),
+	groupAsN(2),
 	{
 		name: 'ASCII values',
 		validity: input => input !== '',
@@ -137,6 +192,16 @@ const transforms = [
 				.map(c => braille[c.toUpperCase()] !== undefined ? braille[c.toUpperCase()] : c)
 				.join('');
 		},
+	},
+	{
+		name: 'To US State',
+		validity: input => input !== '' && _(input)
+			.split(' ')
+			.every(s => usStates[s.toUpperCase()] !== undefined),
+		transform: input => _(input)
+			.split(' ')
+			.map(s => usStates[s.toUpperCase()])
+			.join(' '),
 	},
 ];
 
