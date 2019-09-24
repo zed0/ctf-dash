@@ -159,7 +159,7 @@ const transforms = [
 		name: 'As ASCII',
 		validity: input => _(input)
 			.split(' ')
-			.every(c => parseInt(c, 10) < 256),
+			.every(s => s !== '' && _.every(s, c => _.includes(_.take(hexDigits, 10), c)) && parseInt(s, 10) <= 256),
 		transform: input => _(input)
 			.split(' ')
 			.map(c => String.fromCharCode(parseInt(c, 10)))
@@ -176,8 +176,7 @@ const transforms = [
 		name: 'Index alphabet',
 		validity: input => _(input)
 			.split(' ')
-			.map(n => parseInt(n, 10))
-			.every(n => (n <= 26 && n > 0)),
+			.every(s => s !== '' && _.every(s, c => _.includes(_.take(hexDigits, 10), c)) && parseInt(s, 10) > 0 && parseInt(s, 10) <= 26),
 		transform: input => _(input)
 			.split(' ')
 			.map(n => parseInt(n, 10))
