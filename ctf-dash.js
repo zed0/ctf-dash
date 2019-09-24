@@ -1,11 +1,12 @@
 // Tracking changes via this rather than on change because change only fires when the input is blurred
 let previousInput = null;
 $(document).ready(function(){
+	const debouncedUpdate = _.debounce(updateInputs, 250);
 	$('#input-text').on('keyup', function() {
 		const text = $("#input-text").val();
 		if(previousInput !== text) {
 			previousInput = text;
-			updateInputs(text);
+			debouncedUpdate(text);
 		}
 	});
 });
