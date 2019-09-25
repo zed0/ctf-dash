@@ -205,6 +205,15 @@ const transforms = [
 	},
 ];
 
+const checkers = [
+	{
+		name: 'Dictionary word',
+		check: input => {
+			return _.includes(dictionaryWords, input);
+		},
+	},
+];
+
 const maxDepth = 4;
 function runTransforms(input, parentResults, depth=0) {
 	const results = [];
@@ -221,11 +230,15 @@ function runTransforms(input, parentResults, depth=0) {
 			continue;
 
 		const childResults = runTransforms(nextInput, [...parentResults, nextInput], depth + 1);
+		const likely = _.some(checkers, checker => checker.check(nextInput));
+		const childLikely = _.sumBy(childResults, child => child.likelyTotal);
 		results.push({
 			operation: transform.name,
 			result: nextInput,
 			children: childResults,
 			displayClasses: transform.displayClasses,
+			likely: likely,
+			likelyTotal: (childLikely * 0.1) + likely, // Reduce likelihood of children to promote top level answers
 		});
 	}
 
@@ -243,7 +256,7 @@ const generateHtml = _.template(`
 				<%- chain %>
 			</label>
 			<div class="col-sm-10">
-				<textarea class="form-control result-output" id="<%- id %>-input" readonly rows="1"><%= result %></textarea>
+				<textarea class="form-control result-output <%= likely ? 'is-valid' : '' %>" id="<%- id %>-input" readonly rows="1"><%= result %></textarea>
 			</div>
 		</div>
 		<div
@@ -264,13 +277,22 @@ function displayResults(parentElement, parentId, results) {
 			id,
 			chain: result.operation,
 			result: result.result,
-			extraClasses: result.displayClasses,
+			extraClasses: `${result.displayClasses ? result.displayClasses : ''}`,
+			likely: result.likely,
 		});
 		const resultElement = $(resultHtml).appendTo(parentElement);
 
 		const childResultsArea = resultElement.find('.children');
 		displayResults(childResultsArea, id, result.children);
 	}
+}
+
+function sortResults(results) {
+	const sortedResults = _.sortBy(results, result => -result.likelyTotal);
+	for(const result of sortedResults) {
+		result.children = sortResults(result.children);
+	}
+	return sortedResults;
 }
 
 function updateInputs(text) {
@@ -281,5 +303,6 @@ function updateInputs(text) {
 	const resultsArea = $('#result-area');
 	resultsArea.empty();
 
-	displayResults(resultsArea, 'root', results);
+	const sortedResults = sortResults(results);
+	displayResults(resultsArea, 'root', sortedResults);
 }
